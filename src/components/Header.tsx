@@ -1,5 +1,5 @@
 import { Plus, RefreshCw, Search } from "lucide-react";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 
 interface HeaderProps {
   isMobile?: boolean;
@@ -15,17 +15,36 @@ export const Header = ({ isMobile, onSearch }: HeaderProps) => {
     onSearch(value);
   };
 
-  const ActionButtons = () => (
-    <>
-      <button className="flex items-center border border-[#D5D7DA] gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded text-gray-700 hover:bg-gray-100">
-        <RefreshCw size={16} />
-        Refresh All
-      </button>
-      <button className="flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded bg-[#0969DA] text-white hover:bg-[#0860C9]">
-        <Plus size={16} />
-        Add Repository
-      </button>
-    </>
+  const ActionButtons = useMemo(
+    () => (
+      <>
+        <button
+          className="flex items-center border border-[#D5D7DA] gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded text-gray-700 hover:bg-gray-100"
+          aria-label="Refresh repositories"
+          onClick={() => {
+            /* handle refresh */
+          }}
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && e.currentTarget.click()}
+        >
+          <RefreshCw size={16} />
+          Refresh All
+        </button>
+        <button
+          className="flex items-center gap-1.5 text-xs sm:text-sm px-3 py-1.5 rounded bg-[#0969DA] text-white hover:bg-[#0860C9]"
+          aria-label="Add new repository"
+          onClick={() => {
+            /* handle add */
+          }}
+          tabIndex={0}
+          onKeyDown={(e) => e.key === "Enter" && e.currentTarget.click()}
+        >
+          <Plus size={16} />
+          Add Repository
+        </button>
+      </>
+    ),
+    []
   );
 
   return (
@@ -37,9 +56,7 @@ export const Header = ({ isMobile, onSearch }: HeaderProps) => {
             <span className="text-sm text-gray-600">33 total repositories</span>
           </div>
           {!isMobile && (
-            <div className="flex items-center gap-2">
-              <ActionButtons />
-            </div>
+            <div className="flex items-center gap-2">{ActionButtons}</div>
           )}
         </div>
 
@@ -58,9 +75,7 @@ export const Header = ({ isMobile, onSearch }: HeaderProps) => {
         </div>
 
         {isMobile && (
-          <div className="flex items-start gap-2 mt-4">
-            <ActionButtons />
-          </div>
+          <div className="flex items-start gap-2 mt-4">{ActionButtons}</div>
         )}
       </div>
     </div>

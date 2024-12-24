@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { ChevronDown, Phone, LogOut } from "lucide-react";
@@ -13,16 +13,27 @@ export const Sidebar = ({ isMobile, onClose }: SidebarProps) => {
   const [activePage, setActivePage] = useState("Repositories");
   const navigate = useNavigate();
 
-  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
+  const toggleDropdown = useCallback(() => {
+    setIsDropdownOpen((prev) => !prev);
+  }, []);
 
-  const handleNavClick = (label: string) => {
-    setActivePage(label);
-    if (label !== "Repositories") {
-      alert("This feature is currently under progress!");
-    }
-  };
+  const handleNavClick = useCallback(
+    (label: string) => {
+      setActivePage(label);
+      if (label !== "Repositories") {
+        alert("This feature is currently under progress!");
+      }
+      if (isMobile) {
+        onClose?.();
+      }
+    },
+    [isMobile, onClose]
+  );
 
   const handleLogout = () => {
+    if (isMobile) {
+      onClose?.();
+    }
     navigate("/auth");
   };
 

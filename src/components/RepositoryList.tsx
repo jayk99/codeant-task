@@ -1,36 +1,25 @@
+import { useMemo } from "react";
+import { motion } from "framer-motion";
 import { RepositoryItem } from "./RepositoryItem";
 import type { RepositoryListProps } from "../types/repository";
 import { repositories } from "../constants/data";
-import { motion } from "framer-motion";
-import { useMemo } from "react";
 
-function simplifyString(str: string): string {
-  return str.toLowerCase().trim().replace(/\s+/g, " ");
-}
+const simplifyString = (str: string): string =>
+  str.toLowerCase().trim().replace(/\s+/g, " ");
 
-export function RepositoryList({ searchQuery = "" }: RepositoryListProps) {
+export const RepositoryList = ({ searchQuery = "" }: RepositoryListProps) => {
   const filteredRepositories = useMemo(() => {
     const normalizedQuery = simplifyString(searchQuery);
-
     if (!normalizedQuery) return repositories;
 
     const searchTerms = normalizedQuery.split(" ");
-
     return repositories
       .filter((repo) => {
-        const searchableFields = [repo.name, repo.language, repo.visibility]
-          .join(" ")
-          .toLowerCase();
-
-        // Check if all search terms match at least one of the fields
-        return searchTerms.every((term) => {
-          const searchTerm = term.toLowerCase();
-          return (
-            repo.name.toLowerCase().includes(searchTerm) ||
-            repo.language.toLowerCase().includes(searchTerm) ||
-            repo.visibility.toLowerCase().includes(searchTerm)
-          );
-        });
+        const searchableText =
+          `${repo.name} ${repo.language} ${repo.visibility}`.toLowerCase();
+        return searchTerms.every((term) =>
+          searchableText.includes(term.toLowerCase())
+        );
       })
       .sort((a, b) => {
         // Prioritize exact name matches
@@ -69,4 +58,4 @@ export function RepositoryList({ searchQuery = "" }: RepositoryListProps) {
       ))}
     </motion.div>
   );
-}
+};
